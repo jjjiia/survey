@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>survey</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+    
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+  
+    
+    <style>
+        body{
+            font-size:9px;
+            font-family: 'Libre Baskerville', serif;
+        }
+        #chart1{
+            width:100%;
+            height:100%;
+            display:inline-block;
+            position:absolute;
+            left:0%;
+            margin:20px;
+        }
+        #gender{
+            position:absolute;
+            left:40%;
+            top:30%;
+            height:150px;
+            font-family: helvetica;
+            color:#1d2129;
+            font-size:18px;
+            background: #edf0f5;
+            padding:20px;
+            border-top:50px  #3b5998 solid;
+        }
+        .inputGender{
+            border: 1px solid #ccd0d5;
+            font-size:18px;
+            width:300px;
+            border-radius:5px;
+        }
+        .selectPronoun{
+            font-size:18px;
+            width:300px;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript" src="genders.js"></script>
+   
+    <div id="chart1"></div>
+    <div id="gender">
+        <input type="radio" name="gender" value="male"> Male
+        <input type="radio" name="gender" value="female"> Female
+        <input type="radio" name="gender" value="other"> Custom
+        <br/>
+        <br/>
+        <select class="selectPronoun">
+          <option value="select"  >Select your Pronoun</option>
+          <option value="she">She "Wish her a happy brithday!"</option>
+          <option value="he">He "Wish him a happy brithday!"</option>
+          <option value="they">They "Wish them a happy brithday!"</option>          
+        </select>
+        <br/>
+        <br/>
+        <input type="text" class="inputGender" name="gender" value="Enter your gender (optional)">
+        <br/>
+        
+    </div>
+<script type="text/javascript"> 
+    var genders = ["Asexual","Female to male trans man","Female to male transgender man","Female to male transsexual man","F2M","Gender neutral","Hermaphrodite","Intersex man","Intersex person","Intersex woman","Male to female trans woman","Male to female transgender woman","Male to female transsexual woman","Man","M2F","Polygender","T* man","T* woman","Two* person","Two-spirit person","Woman","Agender","Androgyne","Androgynes","Androgynous","Bigender","Cis","Cis Female","Cis Male","Cis Man","Cis Woman","Cisgender","Cisgender Female","Cisgender Male","Cisgender Man","Cisgender Woman","Female to Male","FTM","Gender Fluid","Gender Nonconforming","Gender Questioning","Gender Variant","Genderqueer","Intersex","Male to Female","MTF","Neither","Neutrois","Non-binary","Other","Pangender","Trans","Trans Female","Trans Male","Trans Man","Trans Person","Trans*Female","Trans*Male","Trans*Man","Trans*Person","Trans*Woman","Transexual","Transexual Female","Transexual Male","Transexual Man","Transexual Person","Transexual Woman","Transgender Female","Transgender Person","Transmasculine","Two-spirit"]
+  
+    console.log(genders)
+  
+   // surveyDots()
+    /*
+    / README
+    */
+    //SVG filter for the gooey effect
+    //Based on http://tympanus.net/codrops/2015/03/10/creative-gooey-effects/
+    var h = window.innerHeight;     // The square size in pixels of the 2-d world
+    var w = window.innerWidth;     // The square size in pixels of the 2-d world
+    
+    var svg = d3.select("#chart1").append("svg")
+    .attr("height", h)
+    .attr("width", w)
+    .append("g")
+   
+ 
+   
+    var filter = svg.append("defs")
+        .append("filter")
+        //use a unique id to reference again later on
+        .attr("id","gooeyCodeFilter");
+
+    //Append multiple "pieces" to the filter
+    filter.append("feGaussianBlur")
+        .attr("in","SourceGraphic")
+        .attr("stdDeviation","10")
+        .attr("color-interpolation-filters","sRGB")
+        .attr("result","blur");
+    filter.append("feColorMatrix")
+        //the class used later to transition the gooey effect
+        .attr("class","blurValues")
+        .attr("in","blur")
+        .attr("mode","matrix")
+        .attr("values","1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9")
+        .attr("result","gooey");
+//
+        
+        var circleWrapper = svg.append("g")
+			.style("filter", "url(#gooeyCodeFilter)");
+            
+    // Basic control variables
+  // console.log(h,w)
+    var numParticles = 100;
+    var epochTarget = 1;
+    var epochActual = 0;
+    var counter = 0;
+
+    var getXSpeed = function(){
+        // Returns a number from -25 to -1 or 1 to 25
+        return ((Math.random() > 0.5)? -1 : 1) * ((Math.random() * 24) + 1);
+    };
+
+    var getYSpeed = function(){
+        // Returns a number from 25-100
+        return ((Math.random() * 75) + 25);
+    };
+
+    var getFill = function(){
+        // Returns a number from 25-100
+        return "rgb("+Math.random()*200+","+Math.random()*200+","+Math.random()*200+")"
+    };
+    /*
+    */
+    
+    var getLabel = function(){
+        return genders[Math.round(Math.random()*(genders.length-1))]
+    }
+    
+    
+    var particles = [];
+    for(var i=0; i<numParticles; i++){
+        particles.push({
+            x: Math.floor(Math.random() * w),
+            y: -500,
+            r: 20,
+            key: counter++,
+            vx: getXSpeed(),
+            vy: getYSpeed(),
+            fill:getFill(),
+            label:getLabel()
+        });
+    }
+
+    for(var i=0; i<numParticles/2; i++){
+        var label = getLabel()
+        d3.select("#chart1").append("div").html(label)
+        .style("position","absolute")
+        .style("left",Math.random()*w+"px")
+        .style("top",Math.random()*h+"px")
+        .style("font-family","helvetica")
+        .style("color",getFill())
+        
+    }
+
+    // Redraw function is responsible for updating the state of the dom
+    var redraw = function(elapsed){
+        // Bind the data to the particles
+        var particle = circleWrapper
+        .selectAll(".particle")
+        .data(particles, function(d) { return d.key; } );
+
+        // Update
+       d3.selectAll(".particle")
+            .attr("cx", function(d) { return d.x; } )
+            .attr("cy", function(d) { return d.y; } );
+        // Enter
+        
+     var circleG = particle.enter()
+            .append("g")//.attr("class","circleGroup")
+           
+           
+        circleG.append("circle")
+            .attr("class", "particle")
+            .attr("cx", function(d) { return d.x; } )
+            .attr("cy", function(d) { return d.y; } )
+            .attr("r", function(d) { return d.r; })
+            .attr("opacity",.8)
+            .attr("fill",function(d){return d.fill});
+            
+        particle.exit().remove();
+    
+    //
+    // var particle = svg.selectAll("text.particle")
+    //    .data(labels, function(d) { return d.key; } );
+    //    
+    //    particle
+    //        .attr("x", function(d) { return d.x; } )
+    //        .attr("y", function(d) { return d.y; } );
+    //    
+    //    particle.enter().append("text")
+    //        .attr("class", "particle")
+    //        .attr("x",function(d) { return d.x; } )
+    //        .attr("y", function(d) { return d.y; } )
+    //        .text("b")
+    //
+    //    particle.exit().remove();
+    //     
+      
+        
+    };
+
+    /*
+    */
+    var update = function(elapsed){
+        for(var j=0; j<particles.length; j++){
+            var particle = particles[j];
+        
+            particle.x = particle.x + (elapsed/1000) * particle.vx;
+            particle.y = particle.y + (elapsed/1000) * particle.vy;
+        
+            if(particle.x < -10) { particle.x = w - 1; }
+            if(particle.x > w + 10) { particle.x = 0; }
+
+            // Particle is done, so recreate it
+            if(particle.y > w- 1) { 
+                particle.x = Math.floor(Math.random() * w);
+                particle.y = 0;
+                particle.key = counter++;
+                particle.vx = getXSpeed();
+                particle.vy = getYSpeed();
+            }
+        }
+    };
+
+    /*
+    / This function will orchestrate the main game loop, incrementing the
+    / current epoch, calling update and then calling redraw for each epoch.
+    */
+    var doEpoch = function(){
+        var dtg = new Date();
+        var elapsed = dtg.getTime() - epochActual;
+    
+        update(elapsed);
+        redraw(elapsed);
+
+        epochActual = dtg.getTime();
+        window.setTimeout(doEpoch, epochTarget);
+    };
+
+    // Add the click handler to the start button
+
+        var dtg = new Date();
+        epochActual = dtg.getTime();
+        doEpoch();
+   
+   
+    
+    function surveyDots(){
+        var svg = d3.select("#chart1").append("svg").attr("width",1000).attr("height",1000)
+        var questions = 45
+        var people = 45
+        var grid = 5
+        for(var i=0; i<questions; i++){
+            for(var j=0; j<people; j++){
+                var column = j%3*questions*grid+grid
+                svg.append("circle").attr("r",grid/3)
+                    .attr("cx",i*grid+column)
+                    .attr("cy",Math.floor(j/3)*grid+grid)
+                    .attr("class", "_"+i+"_"+j)
+                    .style("opacity",0)
+                    .transition().delay(j*20+i*5)
+                    .style("opacity",Math.random())
+                
+                if(i!=22 && i!=23 && i!=40){
+                    d3.select("._"+i+"_"+j).transition()
+                    .delay(12000+j*20+Math.random()*50)
+                    .ease(d3.easeBounce,1) 
+                    .attr("cy",900)
+                    .on("end",function(){
+                        d3.select(this).remove()
+                    })
+                    
+                }
+            }
+        }
+ 
+    }
+    
+
+</script>
+</body>
+</html>
