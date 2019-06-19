@@ -20,13 +20,49 @@
 </head>
 <body>   
     <div id="sections">
+        <div id = "step1" class="text">
         <div id="title">Survey</div>
         <p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet finibus justo. Quisque quis hendrerit neque. Nunc in lorem sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nec quam mattis, facilisis mauris sed, pharetra tortor. Vestibulum in massa augue. In at massa convallis, congue magna ut, dictum nunc. Aliquam pulvinar, nulla sed pellentesque consequat, enim diam elementum tortor, id laoreet lectus tellus sit amet augue. Phasellus est lectus, rhoncus ut urna non, convallis hendrerit sapien. Nunc tincidunt, tortor ut semper finibus, velit ipsum mattis dui, molestie maximus massa felis consectetur felis. Sed quis.        </p>
-
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet finibus justo. Quisque quis hendrerit neque. Nunc in lorem sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nec quam mattis, facilisis mauris sed, pharetra tortor. Vestibulum in massa augue. In at massa convallis, congue magna ut, dictum nunc. Aliquam pulvinar, nulla sed pellentesque consequat, enim diam elementum tortor, id laoreet lectus tellus sit amet augue. Phasellus est lectus, rhoncus ut urna non, convallis hendrerit sapien. Nunc tincidunt, tortor ut semper finibus, velit ipsum mattis dui, molestie maximus massa felis consectetur felis. Sed quis.        </p>
+        </div>
+        
+        <div id = "step2" class="text">
+            <div id="title">step 2</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step3" class="text">
+            <div id="title">step 3</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step4" class="text">
+            <div id="title">step 4</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step5" class="text">
+            <div id="title">step 5</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step6" class="text">
+            <div id="title">step 6</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step7" class="text">
+            <div id="title">step 7</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step8" class="text">
+            <div id="title">step 8</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
+        <div id = "step9" class="text">
+            <div id="title">step 9</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+        </div>
 <div id="back"> back</div>
 <div id="next"> next</div>
+<div id="timeline"></div>
     </div>
+
   <div id="chart1">
    <!--
     steps:
@@ -62,17 +98,38 @@ stepFunctions[7] = removeAmbivalent
 stepFunctions[8] = removeIlliberal
 stepFunctions[9] = whiteFriendGrid
 stepFunctions[10] = hoFriendships
-    
+
+var totalSteps = stepFunctions.length
+    for(var s =0; s<=totalSteps;s++){
+        d3.select("#timeline").append("div").attr("class","timeline timeline_"+s)
+        .style("margin","2px")
+        .style("width","40px")
+        .style("height","10px")
+        .style("border","1px solid black")
+        .style("background-color","white")
+        .style("display","inline-block")
+    }
+    d3.selectAll(".text").style("visibility","hidden")
     
 d3.select("#next").on("click",function(){
     step+=1
     console.log(step)
+
+    d3.selectAll(".text").style("visibility","hidden")
+    d3.select("#step"+step).style("visibility","visible")
+    d3.selectAll(".timeline").style("background-color","white")
+    d3.selectAll(".timeline_"+step).style("background-color","black")
     stepFunctions[step]()
 })
 
 d3.select("#back").on("click",function(){
     step-=1
+    console.log(step)
     if(step<0){step=0}
+    d3.selectAll(".text").style("visibility","hidden")
+    d3.select("#step"+step).style("visibility","visible")
+    d3.selectAll(".timeline").style("background-color","white")
+    d3.selectAll(".timeline_"+step).style("background-color","black")
     stepFunctions[step]()
 })
 

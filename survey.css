@@ -7,7 +7,7 @@ background-color:rgba(255,255,255,.3);
 width:90%;
 height:200px;
 padding:30px;
-border:2px solid black;
+border-top:1px solid black;
 }
 
 .step {
@@ -26,6 +26,18 @@ width:100%;
 height:100%;
 border:1px solid black;
 }
+#timeline{
+    position:fixed;
+    left:40px;
+    bottom:40px;
+}
+.text{
+    position: fixed;
+    bottom: 2%;
+    left: 2%; 
+    height:200px;
+    padding:30px;
+}
 #next{
     border:1px solid black;
     border-top-right-radius:10px;
@@ -35,7 +47,7 @@ border:1px solid black;
     text-align:center;
     position:fixed;
     left:100px;
-    bottom:40px;
+    bottom:80px;
 }
 #back{
     border:1px solid black;
@@ -46,5 +58,5 @@ border:1px solid black;
     text-align:center;
     position:fixed;
     left:40px;
-    bottom:40px;
+    bottom:80px;
 }
