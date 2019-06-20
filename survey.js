@@ -209,7 +209,7 @@ function group(){
             var percent = Math.round(count/total*100)
             
             chartDiv.append("div")
-            .attr("class",d+"_text")
+            .attr("class",d+"_text question")
             .html("<span class=\"boldText\">"+d+"</span>"
                 +"<br>"
             +descriptions[d]
@@ -249,6 +249,22 @@ function group(){
 }
 function whiteFriendGrid(){
     console.log("friend")
+    d3.selectAll(".check").remove()
+    d3.selectAll(".question").remove()
+    d3.selectAll(".q25").remove()
+    
+    
+   var question39= d3.select("#questions").append("div")
+            .attr("class","q39")
+            .style("width","100%")
+
+    
+    question39.append("img")
+    .attr("src","q39.jpg").attr("width",w/2+"px")
+    .style("margin-left",w/4+"px")
+    .style("opacity",1)
+    .style("margin-top","70px")
+    .style("width","550px")
     
     d3.selectAll(".w")
     .each(function(d,i){
@@ -258,12 +274,22 @@ function whiteFriendGrid(){
     })
    
     
+    
     var friendGroups = getFriendGroupClass()
         
     for(var f in friendGroups){
         var group = friendGroups[f]
         var gridNumber = f
         console.log(d3.selectAll("."+group).size())
+        var total = d3.selectAll("."+group.split("_")[0]).size()
+        var count = d3.selectAll("."+group).size()
+        var percent = Math.round(count/total*100)
+        
+        d3.select("#questions").append("div").attr("class","question")
+        .html(count +" "+percent)
+        .style("position","absolute")
+        .style("left",grid+Math.floor(gridNumber/3)*grid*2*11+w/4+"px")
+        .style("top",grid+(gridNumber%3)*grid*11+h/3+"px")
         
         d3.selectAll("."+group)
             .each(function(d,i){
@@ -325,6 +351,9 @@ function removeAmbivalent(){
         .each(function(d,i){
             if(d.race=="b"){
                 d3.select(this).classed("b_"+group,true)
+            }else{
+                d3.select(this).classed("w_"+group,true)
+                
             }
         })
         
@@ -344,6 +373,9 @@ function removeIlliberal(){
         .each(function(d,i){
             if(d.race=="b"){
                 d3.select(this).classed("b_"+group,true)
+            }else{
+                d3.select(this).classed("w_"+group,true)
+                
             }
         })
         
@@ -364,7 +396,7 @@ function showPerson(){
         if(d.p==100){
             d3.select(this)
             .transition()
-            .delay(d.q*100)
+            .delay(d.q*500)
             .attr("cx",function(d){
                 return d.column*questions*grid+d.q*grid+grid
             })
@@ -387,7 +419,7 @@ function showPerson(){
             .attr("width",w/4-10+"px")
             .style("opacity",.4)
             
-            question.transition().duration(2000).delay(d.q*100).style("visibility","visible")
+            question.transition().delay(d.q*500).style("visibility","visible")
         }
     })
 }
