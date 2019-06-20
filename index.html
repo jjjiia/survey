@@ -9,7 +9,7 @@
     
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
     
-<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript" src="d3v5.js"></script>
   <script src="d3-tip.js"></script>
   <script src="scroller.js"></script>
   <link href="survey.css" rel="stylesheet">
@@ -23,15 +23,15 @@
         <div id = "step1" class="text">
         <div id="title">Survey</div>
         <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet finibus justo. Quisque quis hendrerit neque. Nunc in lorem sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nec quam mattis, facilisis mauris sed, pharetra tortor. Vestibulum in massa augue. In at massa convallis, congue magna ut, dictum nunc. Aliquam pulvinar, nulla sed pellentesque consequat, enim diam elementum tortor, id laoreet lectus tellus sit amet augue. Phasellus est lectus, rhoncus ut urna non, convallis hendrerit sapien. Nunc tincidunt, tortor ut semper finibus, velit ipsum mattis dui, molestie maximus massa felis consectetur felis. Sed quis.        </p>
+        In January 1947, a “Community Survey” was given to Addison Terrace residents to measure everything from their perception of their job prospects to their attitudes toward neighbors of a different race.   </p>
         </div>
         
         <div id = "step2" class="text">
-            <div id="title">step 2</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+            <div id="title">all together the researchers collected 45 answers from each of the 478 residents</div>
+            <p>these 45x478=21510 data points formed the basis of the analysis </p>
         </div>
         <div id = "step3" class="text">
-            <div id="title">step 3</div>
+            <div id="title">Ultimately only the answers to 2 questions mattered.</div>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
         </div>
         <div id = "step4" class="text">
@@ -61,9 +61,10 @@
 <div id="back"> back</div>
 <div id="next"> next</div>
 <div id="timeline"></div>
-    </div>
+</div>
 
-  <div id="chart1">
+  <div id="questions"></div>
+  <div id="chart1"></div>
    <!--
     steps:
        <div id="showPerson">show 1 person</div>
@@ -91,13 +92,13 @@ var stepFunctions = []
 stepFunctions[1] = showPerson
 stepFunctions[2] = showAll
 stepFunctions[3] = hideQuestions
-stepFunctions[4] = consolidate
-stepFunctions[5] = group
-stepFunctions[6] = removeLiberal
-stepFunctions[7] = removeAmbivalent
-stepFunctions[8] = removeIlliberal
-stepFunctions[9] = whiteFriendGrid
-stepFunctions[10] = hoFriendships
+//stepFunctions[4] = consolidate
+stepFunctions[4] = group
+stepFunctions[5] = removeLiberal
+stepFunctions[6] = removeAmbivalent
+stepFunctions[7] = removeIlliberal
+stepFunctions[8] = whiteFriendGrid
+stepFunctions[9] = hoFriendships
 
 var totalSteps = stepFunctions.length
     for(var s =0; s<=totalSteps;s++){

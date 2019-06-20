@@ -4,7 +4,11 @@ var w = 1366
 var questions = 45
 var people = 487
 var grid = d3.min([1366/(people/3+2),1024/(questions+2)/3])
-       
+var descriptions = {
+    liberal:"I think colored and white people should live together in housing projects. And on the whole, I think that colored and white in the village get along pretty well.",
+    ambivalent:"I don’t think colored and white people should live together in housing projects. BUT on the whole, I think that colored and white in the village get along well.",
+    illiberal:"I don’t think colored and white people should live together in housing projects. And on the whole, I don’t think that colored and white in the village get along."
+    }       
 //d3.select("#dots").on("click",function(){surveyDots()})
 
 surveyDots()
@@ -85,7 +89,7 @@ function consolidate(){
     .each(function(d,i){
         d3.select(this)
             .transition("consolidate")
-            .attr("cx", d.column*w/4+w/4)
+            .attr("cx", d.column*w/5+w/4)
             .on("end",function(){
                 if(d.q!=22){
                     d3.select(this).transition("consolidate-opacity").attr("opacity",0)
@@ -101,17 +105,29 @@ function consolidate(){
 function hideQuestions(){
     d3.selectAll("circle")
     .each(function(d,i){
-        if(d.q!=22 && d.q!=23&&d.q!=33){
-            d3.select(this).transition().delay(Math.random()*1000)
-            .attr("class","threeQuestions")
-            .attr("opacity",0)
-           
-            //.on("end",function(){
-            //   // d3.select(this).remove()                
-            //})
+        if(d.q!=25 && d.q!=26){
+            d3.select(this).transition().delay(Math.random()*5000)
+            .attr("cy",1100)
+           // .attr("opacity",0)
+        }else{
+            d3.select(this).transition().delay(Math.random()*5000)
+            .attr("class","twoQuestions")
         }
-        
     })
+    
+   var questions25_26= d3.select("#questions").append("div")
+            .attr("class","q25")
+            .style("width","100%")
+
+    
+    questions25_26.append("img")
+    .attr("src","q25_26.jpg").attr("width",w/2+"px")
+    .style("margin-left",w/4+"px")
+    .style("opacity",1)
+    .style("margin-top","100px")
+    
+    
+    
 }
 function getFriendGroupClass(){
     var groups = ["l","a",'i']
@@ -127,29 +143,107 @@ function getFriendGroupClass(){
 
 function group(){
     console.log("group")
-    d3.selectAll(".selected")
+    
+    d3.selectAll(".twoQuestions")
     .each(function(d,i){
-        if(d.race=="w"){
-            d3.select(this).classed("w",true)
-        }
-        if(d.group=="l"){
-            d3.select(this).classed("liberal",true)
-        }else if(d.group=="a"){
-            d3.select(this).classed("ambivalent",true)
+        if(d.q!=25){
+            d3.select(this).transition("consolidate-opacity").attr("opacity",0)
         }else{
-            d3.select(this).classed("illiberal",true)
+            d3.select(this).attr("class","grouped").attr("opacity",1).attr("fill","black")
         }
     })
+            
+    d3.selectAll(".grouped")
+    .each(function(d,i){     
+            if(d.race=="w"){
+                d3.select(this).classed("w",true)
+            }
+            if(d.group=="l"){
+                d3.select(this).classed("liberal",true)
+            }else if(d.group=="a"){
+                d3.select(this).classed("ambivalent",true)
+            }else{
+                d3.select(this).classed("illiberal",true)
+            }
+        })
     
     var groups = ["liberal","ambivalent","illiberal"]
     
-    for(var g in groups){
+    var chartDiv = d3.select("#questions")
+        
+        var offset = 0
+        
+        var checkPlacement = {
+            liberal:[[390,220],[730,210]],
+            ambivalent:[[390,220],[730,240]],
+            illiberal:[[390,250],[730,240]]
+        }
+         
+        for(var d in descriptions){
+                        
+            d3.select("body").append("div").attr("class","check").html("&#9747")
+            .style("position","absolute")
+            .style("left",checkPlacement[d][0][0]+"px")
+            .style("top",checkPlacement[d][0][1]+"px")
+            .style("opacity",0)
+            .transition()
+            .delay(offset*2000)
+            .style("opacity",1)
+            .on("end",function(){
+                d3.select(this).transition().delay(2000).style("opacity",0)
+            })
+            d3.select("body").append("div").attr("class","check").html("&#9747")
+            .style("position","absolute")
+            .style("left",checkPlacement[d][1][0]+"px")
+            .style("top",checkPlacement[d][1][1]+"px")
+            .style("opacity",0)
+            .transition()
+            .delay(offset*2000)
+            .style("opacity",1)
+            .on("end",function(){
+                d3.select(this).transition().delay(2000).style("opacity",0)
+            })
+            
+            var count = d3.selectAll("."+d).size()
+            var total = d3.selectAll(".grouped").size()
+            var percent = Math.round(count/total*100)
+            
+            chartDiv.append("div")
+            .attr("class",d+"_text")
+            .html("<span class=\"boldText\">"+d+"</span>"
+                +"<br>"
+            +descriptions[d]
+                +"<br>"
+            +"<span class=\"boldText\">"+count+"</span> people"
+                +"<br>"
+            +"<span class=\"boldText\">"+percent+"%</span> of population"
+            )
+            .style("position","absolute")
+            .style("left",offset*(grid*10*2+grid*2)+w/4+"px")
+            .style("top",h/3-50+"px")
+            .style("width",10*grid*2+"px")
+            .style("opacity",0)
+            .transition()
+            .delay(offset*2000)
+            .style("opacity",1)
+            offset+=1
+        }
+        
+    
+        for(var g in groups){
         var className = groups[g]
         d3.selectAll("."+className)
         .each(function(d,i){
-            d3.select(this).transition()
-            .attr("cx",i%10*grid+(g*grid*11)+grid*2)
-            .attr("cy",Math.floor(i/10)*grid+grid*2)
+            d3.select(this)
+            .attr("opacity",0)
+            .transition()
+            .duration(1000)
+            .delay(g*2000)
+            .attr("r",d.r*2)
+            .attr("cx",i%10*grid*2+(g*grid*2*11)+w/4)
+            .attr("cy",Math.floor(i/10)*grid*2+grid*2+h/3+100)
+            .attr("opacity",1)
+            
         })
     }
 }
@@ -165,7 +259,7 @@ function whiteFriendGrid(){
    
     
     var friendGroups = getFriendGroupClass()
-    
+        
     for(var f in friendGroups){
         var group = friendGroups[f]
         var gridNumber = f
@@ -176,8 +270,8 @@ function whiteFriendGrid(){
                 console.log(d3.select(this).attr("class"))
                 d3.select(this)
                 .transition()
-                .attr("cx",i%10*grid+grid+Math.floor(gridNumber/3)*200)
-                .attr("cy",Math.floor(i/10)*grid+grid+(gridNumber%3)*200)
+                .attr("cx",i%10*grid*2+grid+Math.floor(gridNumber/3)*grid*2*11+w/4)
+                .attr("cy",Math.floor(i/10)*grid*2+grid+(gridNumber%3)*grid*2*11+h/3)
             })
     }   
 }
@@ -194,6 +288,8 @@ function removeLiberal(){
         .each(function(d,i){
             if(d.race=="b"){
                 d3.select(this).classed("b_"+group,true)
+            }else{
+                d3.select(this).classed("w_"+group,true)
             }
         })
         
@@ -204,8 +300,25 @@ function removeLiberal(){
                 .ease(d3.easeBounce) 
                 .attr("cy",1000)
         })
-    
+
+    updateTextRace("liberal")
 }
+function updateTextRace(group){
+    var count = d3.selectAll(".w_"+group).size()
+    var total = d3.selectAll(".w").size()
+    var percent = Math.round(count/total*100)
+
+    d3.select("."+group+"_text")
+    .html("<span class=\"boldText\">"+group+"</span>"
+        +"<br>"
+    +descriptions[group]
+        +"<br>"
+    +"<span class=\"boldText\">"+count+"</span> white people"
+        +"<br>"
+    +"<span class=\"boldText\">"+percent+"%</span> of white population"
+    )
+}
+
 function removeAmbivalent(){
     var group = "ambivalent"
     d3.selectAll("."+group)
@@ -222,6 +335,7 @@ function removeAmbivalent(){
                 .ease(d3.easeBounce) 
                 .attr("cy",1000)
         })
+    updateTextRace("ambivalent")
     
 }
 function removeIlliberal(){
@@ -240,6 +354,7 @@ function removeIlliberal(){
                 .ease(d3.easeBounce) 
                 .attr("cy",1000)
         })
+    updateTextRace("illiberal")
     
 }
 
@@ -249,7 +364,7 @@ function showPerson(){
         if(d.p==100){
             d3.select(this)
             .transition()
-            .delay(i)
+            .delay(d.q*100)
             .attr("cx",function(d){
                 return d.column*questions*grid+d.q*grid+grid
             })
@@ -257,30 +372,49 @@ function showPerson(){
                 return d.cy+grid
             })
             .attr("fill","red")
-            .attr("opacity",function(d){return d.opacity})
+            .attr("opacity",function(d){return 1})
             
+            var question = d3.select("#questions").append("div")
+            .attr("class","question")
+            .style("width",w/4-10+"px")
+            .style("height","50px")
+            .style("display","inline-block")
+            .style("visibility","hidden")
+           // .html("question "+d.q)
+            
+            question.append("img")
+            .attr("src","q"+(d.q%8+1)+".jpg")
+            .attr("width",w/4-10+"px")
+            .style("opacity",.4)
+            
+            question.transition().duration(2000).delay(d.q*100).style("visibility","visible")
         }
     })
 }
 
 function showAll(){
+    d3.selectAll(".question").remove()
+    
+    console.log("showall")
     d3.selectAll("circle")
     .each(function(d,i){
         d3.select(this)
         .transition()
-        .delay(function(){return d.p*10})
+        .delay(d.p*30+d.q*5)
         .attr("cx",function(d){
             return d.column*questions*grid+d.q*grid+grid
         })
         .attr("cy",function(d){
             return d.cy+grid
         })
+        .attr("opacity",function(d){return d.opacity})
         .on("end",function(){
             d3.select(this)
             .attr("opacity",function(d){return d.opacity})
         })
         
     })
+    
 }
 function surveyDots(){
         var svg = d3.select("#chart1").append("svg").attr("width", w).attr("height", h)
