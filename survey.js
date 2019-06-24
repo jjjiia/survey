@@ -1,9 +1,10 @@
 //2732 x 2048
-var h = 1024
-var w = 1366
-var questions = 45
+var h = window.innerHeight
+var w = window.innerWidth
+console.log([h,w])
+var questions = 90
 var people = 487
-var grid = d3.min([1366/(people/3+2),1024/(questions+2)/3])
+var grid = d3.min([h/(people/2+2),w/(questions+2)/2])
 var descriptions = {
     liberal:"I think colored and white people should live together in housing projects. And on the whole, I think that colored and white in the village get along pretty well.",
     ambivalent:"I don’t think colored and white people should live together in housing projects. BUT on the whole, I think that colored and white in the village get along well.",
@@ -103,19 +104,21 @@ function consolidate(){
     })
 }
 function hideQuestions(){
+    d3.selectAll(".annotation").remove()
+    d3.selectAll(".question").remove()
+   
     d3.selectAll("circle")
     .each(function(d,i){
         if(d.q!=25 && d.q!=26){
             d3.select(this).transition().delay(Math.random()*5000)
-            .attr("cy",1100)
-           // .attr("opacity",0)
+            .attr("opacity",0)
         }else{
             d3.select(this).transition().delay(Math.random()*5000)
             .attr("class","twoQuestions")
         }
     })
     
-   var questions25_26= d3.select("#questions").append("div")
+   var questions25_26= d3.select("#annotaions").append("div")
             .attr("class","q25")
             .style("width","100%")
 
@@ -391,12 +394,14 @@ function removeIlliberal(){
 }
 
 function showPerson(){
+    d3.selectAll(".annotation").remove()
+    
     d3.selectAll("circle")
     .each(function(d,i){
-        if(d.p==100){
+        if(d.p==200){
             d3.select(this)
             .transition()
-            .delay(d.q*500)
+            .delay(d.q*100)
             .attr("cx",function(d){
                 return d.column*questions*grid+d.q*grid+grid
             })
@@ -406,10 +411,10 @@ function showPerson(){
             .attr("fill","red")
             .attr("opacity",function(d){return 1})
             
-            var question = d3.select("#questions").append("div")
+            var question = d3.select("#annotations").append("div")
             .attr("class","question")
             .style("width",w/4-10+"px")
-            .style("height","50px")
+            .style("height","20px")
             .style("display","inline-block")
             .style("visibility","hidden")
            // .html("question "+d.q)
@@ -419,33 +424,42 @@ function showPerson(){
             .attr("width",w/4-10+"px")
             .style("opacity",.4)
             
-            question.transition().delay(d.q*500).style("visibility","visible")
+            question.transition().delay(d.q*100).style("visibility","visible")
         }
     })
+    
+    d3.select("#annotations").append("div")
+    .html("A survey with 90 Questions")
+    .attr("class","annotation")
 }
 
 function showAll(){
+    d3.selectAll(".annotation").remove()
     d3.selectAll(".question").remove()
     
-    console.log("showall")
     d3.selectAll("circle")
     .each(function(d,i){
         d3.select(this)
         .transition()
-        .delay(d.p*30+d.q*5)
+        .delay(d.p+d.q*5)
         .attr("cx",function(d){
             return d.column*questions*grid+d.q*grid+grid
         })
         .attr("cy",function(d){
             return d.cy+grid
         })
-        .attr("opacity",function(d){return d.opacity})
-        .on("end",function(){
-            d3.select(this)
-            .attr("opacity",function(d){return d.opacity})
-        })
+        .attr("fill",function(d){return d.fill})
+        .attr("opacity",function(d){return 1; return d.opacity})
+       // .on("end",function(){
+       //     d3.select(this)
+       //     .attr("opacity",function(d){return d.opacity})
+       // })
         
     })
+    
+    d3.select("#annotations").append("div")
+    .html("A survey with 90 Questions<br/> given to 478 residents<br/>resulting in 43,020 data points")
+    .attr("class","annotation")
     
 }
 function surveyDots(){
@@ -457,10 +471,10 @@ function surveyDots(){
                 points.push({
                     q:q,
                     p:p,
-                    column: p%3,
+                    column: p%2,
                     opacity:getOpacity(),
                     label:"label",
-                    cy:Math.floor(p/3)*grid,
+                    cy:Math.floor(p/2)*grid,
                     r:grid/2*.8,
                     fill:getFill(),
                     group:getGroup(groups, p),
@@ -480,11 +494,9 @@ function surveyDots(){
         .enter()
         .append("circle")
         .attr("cx",function(d){
-            return -20
             return d.column*questions*grid+d.q*grid
         })
         .attr("cy",function(d){
-            return -20
             return d.cy
         })
         .attr("r",function(d){return d.r})
